@@ -1,3 +1,5 @@
+package com.gokigendori.leetcode;
+
 public class Main {
     public static void main(String[] args) {
         Easy easy = new Easy();
