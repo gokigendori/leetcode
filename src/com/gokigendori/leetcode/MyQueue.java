@@ -1,3 +1,5 @@
+package com.gokigendori.leetcode;
+
 public class MyQueue {
     int[] value;
     int last;
