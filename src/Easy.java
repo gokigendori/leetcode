@@ -8,6 +8,139 @@ import java.util.Map;
 import java.util.Set;
 
 public class Easy {
+
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        List<TreeNode> one = recursive(root, p, new ArrayList<>());
+        List<TreeNode> two = recursive(root, q, new ArrayList<>());
+        if (one.size() < two.size()) {
+            for (int i = two.size() - 1; 0 <= i; i--) {
+                if (i < one.size()) {
+                    if (two.get(i).equals(one.get(i))) {
+                        return two.get(i);
+                    }
+                }
+            }
+        } else {
+            for (int i = one.size() - 1; 0 <= i; i--) {
+                if (i < two.size()) {
+                    if (two.get(i).equals(one.get(i))) {
+                        return two.get(i);
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    public List<TreeNode> recursive(TreeNode root, TreeNode p, List<TreeNode> parents) {
+        List<TreeNode> pp = new ArrayList<>(parents);
+        pp.add(root);
+        if (root.val == p.val) {
+            return pp;
+        } else {
+            List<TreeNode> ret = pp;
+            if (root.left != null) {
+                ret = recursive(root.left, p, pp);
+            }
+            if (root.right != null && ret.get(ret.size() - 1).val != p.val) {
+                ret = recursive(root.right, p, pp);
+            }
+            return ret;
+        }
+    }
+
+
+    public int longestPalindrome(String s) {
+        Map<Character, Integer> map = new HashMap<>();
+        char[] c = s.toCharArray();
+        for (char cc : c) {
+            map.put(cc, map.getOrDefault(cc, 0) + 1);
+        }
+        int result = 0;
+        boolean isOdd = false;
+
+        for (Character cc : new ArrayList<>(map.keySet())) {
+            if (map.get(cc) % 2 == 0) {
+                result += map.get(cc);
+            } else {
+                isOdd = true;
+                result += map.get(cc) - 1;
+            }
+        }
+        if (isOdd) {
+            result++;
+        }
+        return result;
+    }
+
+    public int minCostClimbingStairs(int[] cost) {
+        int[] dp = new int[cost.length + 1];
+        Arrays.fill(dp, Integer.MAX_VALUE);
+        dp[0] = 0;
+        dp[1] = 0;
+        for (int i = 0; i < cost.length; i++) {
+            dp[i + 1] = Math.min(dp[i + 1], dp[i] + cost[i]);
+            if (i + 2 < dp.length) {
+                dp[i + 2] = Math.min(dp[i + 2], dp[i] + cost[i]);
+            }
+        }
+        return dp[cost.length];
+    }
+
+    public int[][] imageSmoother(int[][] M) {
+        int[] x = new int[]{-1, 0, 1, -1, 0, 1, -1, 0, 1};
+        int[] y = new int[]{-1, -1, -1, 0, 0, 0, 1, 1, 1};
+        int[][] result = new int[M.length][M[0].length];
+
+        for (int i = 0; i < M.length; i++) {
+            int[] row = M[i];
+            for (int j = 0; j < row.length; j++) {
+                int total = 0;
+                int count = 0;
+                for (int k = 0; k < 9; k++) {
+                    if ((0 <= j + x[k] && j + x[k] < row.length) &&
+                            (0 <= i + y[k] && i + y[k] < M.length)) {
+                        total += M[i + y[k]][j + x[k]];
+                        count++;
+                    }
+                }
+                result[i][j] = total / count;
+            }
+        }
+        return result;
+    }
+
+    public String reverseStr(String s, int k) {
+        char[] c = s.toCharArray();
+        char[] reverse = new char[c.length];
+        int pos = 0;
+        while (true) {
+            if (pos + 2 * k <= c.length) {
+                for (int i = 0; i < k; i++) {
+                    reverse[pos + i] = c[pos + k - 1 - i];
+                }
+                for (int i = k; i < 2 * k; i++) {
+                    reverse[pos + i] = c[pos + i];
+                }
+            } else if (pos <= c.length && c.length <= pos + k) {
+                for (int i = 0; pos + i < c.length; i++) {
+                    reverse[pos + i] = c[c.length - 1 - i];
+                }
+                break;
+            } else if (pos <= c.length && c.length < pos + 2 * k) {
+                for (int i = 0; i < k; i++) {
+                    reverse[pos + i] = c[pos + k - 1 - i];
+                }
+                for (int i = k; pos + i < c.length; i++) {
+                    reverse[pos + i] = c[pos + i];
+                }
+                break;
+            }
+            pos += 2 * k;
+        }
+        return new String(reverse);
+    }
+
     public String longestWord(String[] words) {
         String result = "";
         Set<String> set = new HashSet<>(Arrays.asList(words));
