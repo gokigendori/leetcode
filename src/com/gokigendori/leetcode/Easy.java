@@ -12,6 +12,110 @@ import java.util.Map;
 import java.util.Set;
 
 public class Easy {
+    public boolean isPowerOfFour(int n) {
+        if (n < 1) {
+            return false;
+        }
+        while (n > 1) {
+            if (n % 4 != 0) {
+                return false;
+            }
+            n /= 4;
+        }
+        return true;
+    }
+
+    public boolean isPowerOfThree(int n) {
+        if (n < 1) {
+            return false;
+        }
+        while (n > 1) {
+            if (n % 3 != 0) {
+                return false;
+            }
+            n /= 3;
+        }
+        return true;
+    }
+
+    public boolean isRectangleOverlap(int[] rec1, int[] rec2) {
+        if (rec1[0] == rec1[2] || rec1[1] == rec1[3]) {
+            return false;
+        }
+        if (rec2[0] == rec2[2] || rec2[1] == rec2[3]) {
+            return false;
+        }
+        // 1上辺と2右縦
+        if (rec1[0] < rec2[2] && rec1[3] > rec2[1] &&
+                rec1[2] > rec2[2] && rec1[3] < rec2[3]) {
+            return true;
+        }
+        // 1上辺と2左縦
+        if (rec1[0] < rec2[0] && rec1[3] > rec2[1] &&
+                rec1[2] > rec2[0] && rec1[3] < rec2[3]) {
+            return true;
+        }
+        // 1下辺と2右縦
+        if (rec1[0] < rec2[2] && rec1[1] > rec2[1] &&
+                rec1[2] > rec2[2] && rec1[1] < rec2[3]) {
+            return true;
+        }
+        // 1下辺と2左縦
+        if (rec1[0] < rec2[0] && rec1[1] > rec2[1] &&
+                rec1[2] > rec2[0] && rec1[1] < rec2[3]) {
+            return true;
+        }
+        // 1左縦と2上辺
+        if (rec1[0] > rec2[0] && rec1[1] < rec2[3] &&
+                rec1[0] < rec2[2] && rec1[3] > rec2[3]) {
+            return true;
+        }
+        // 1左縦と2下辺
+        if (rec1[0] > rec2[0] && rec1[1] < rec2[1] &&
+                rec1[0] < rec2[2] && rec1[3] > rec2[1]) {
+            return true;
+        }
+        // 1右縦と2上辺
+        if (rec1[2] > rec2[0] && rec1[1] < rec2[3] &&
+                rec1[2] < rec2[2] && rec1[3] > rec2[3]) {
+            return true;
+        }
+        // 1右縦と2下辺
+        if (rec1[2] > rec2[0] && rec1[1] < rec2[1] &&
+                rec1[2] < rec2[2] && rec1[3] > rec2[1]) {
+            return true;
+        }
+        // rec2が内包
+        if (rec1[0] > rec2[0] && rec1[1] > rec2[1] && // 左下
+                rec1[0] > rec2[0] && rec1[3] < rec2[3] && // 左上
+                rec1[2] < rec2[2] && rec1[1] > rec2[1] && //右下
+                rec1[2] < rec2[2] && rec1[3] < rec2[3]) {
+            return true;
+        }
+        // rec1が内包
+        if (rec2[0] > rec1[0] && rec2[1] > rec1[1] && // 左下
+                rec2[0] > rec1[0] && rec2[3] < rec1[3] && // 左上
+                rec2[2] < rec1[2] && rec2[1] > rec1[1] && //右下
+                rec2[2] < rec1[2] && rec2[3] < rec1[3]) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isPalindrome(int x) {
+        if (x < 0) {
+            return false;
+        }
+        char[] c = String.valueOf(x).toCharArray();
+        for (int i = 0; i < c.length; i++) {
+            int j = c.length - 1 - i;
+            if (c[i] != c[j]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public String longestWord(String[] words) {
         String result = "";
         Set<String> set = new HashSet<>(Arrays.asList(words));
@@ -835,7 +939,7 @@ public class Easy {
             } else if (one == 1) {
                 list.add("1");
                 next = 0;
-            }else{
+            } else {
                 list.add("0");
                 next = 0;
             }
@@ -843,12 +947,12 @@ public class Easy {
 
         if (list.isEmpty()) {
             list.add("0");
-        }else{
+        } else {
             Collections.reverse(list);
             if (list.get(0).equals("0")) {
                 list.remove(0);
             }
         }
-        return String.join("",list);
+        return String.join("", list);
     }
 }
