@@ -13,6 +13,105 @@ import java.util.Set;
 
 public class Easy {
 
+    public int numPrimeArrangements(int n) {
+        int prime = 0;
+        for (int i = 1; i <= n; i++) {
+            if (isPrime(i)) {
+                prime++;
+            }
+        }
+        long result = 1;
+        for (int i = 1; i <= prime; i++) {
+            result *= i;
+            result %= 1_000_000_007;
+        }
+        for (int i = 1; i <= n - prime; i++) {
+            result *= i;
+            result %= 1_000_000_007;
+        }
+        return (int) result;
+    }
+
+    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+        if (headA == null || headB == null) {
+            return null;
+        }
+        ListNode ap = headA;
+        ListNode bp = headB;
+        while (ap != bp) {
+            // a,bに共通部分があればそこで止まる
+            if (ap == null) {
+                ap = headB;
+            } else {
+                ap = ap.next;
+            }
+
+            if (bp == null) {
+                bp = headA;
+            } else {
+                bp = bp.next;
+            }
+        }
+        return ap;
+    }
+
+    public int getMaximumGenerated(int n) {
+        int[] nn = new int[102];
+        nn[0] = 0;
+        nn[1] = 1;
+        for (int i = 1; i <= 50; i++) {
+            nn[2 * i] = nn[i];
+            nn[2 * i + 1] = nn[i] + nn[i + 1];
+        }
+        int result = 0;
+        for (int i = 0; i <= n; i++) {
+            result = Math.max(nn[i], result);
+        }
+        return result;
+    }
+
+    public boolean isPrime(int x) {
+        if (x == 1) {
+            return false;
+        }
+        for (long i = 2; i * i <= x; i++) {
+            if (x % i == 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public int sumOfLeftLeaves(TreeNode root) {
+        int result = 0;
+        if (root == null) {
+            return result;
+        }
+        if (root.left != null) {
+            result += recursiveSum(root.left, true);
+        }
+        if (root.right != null) {
+            result += recursiveSum(root.right, false);
+        }
+        return result;
+    }
+
+    public int recursiveSum(TreeNode tree, boolean fromLeft) {
+        if (tree.right == null && tree.left == null) {
+            if (fromLeft) {
+                return tree.val;
+            }
+        }
+        int tmp = 0;
+        if (tree.left != null) {
+            tmp += recursiveSum(tree.left, true);
+        }
+        if (tree.right != null) {
+            tmp += recursiveSum(tree.right, false);
+        }
+        return tmp;
+    }
+
     public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
         List<TreeNode> one = recursiveTree(root, p, new ArrayList<>());
         List<TreeNode> two = recursiveTree(root, q, new ArrayList<>());
@@ -52,7 +151,6 @@ public class Easy {
             return ret;
         }
     }
-
 
     public int longestPalindrome(String s) {
         Map<Character, Integer> map = new HashMap<>();
@@ -949,7 +1047,7 @@ public class Easy {
             } else if (one == 1) {
                 list.add("1");
                 next = 0;
-            }else{
+            } else {
                 list.add("0");
                 next = 0;
             }
@@ -957,12 +1055,12 @@ public class Easy {
 
         if (list.isEmpty()) {
             list.add("0");
-        }else{
+        } else {
             Collections.reverse(list);
             if (list.get(0).equals("0")) {
                 list.remove(0);
             }
         }
-        return String.join("",list);
+        return String.join("", list);
     }
 }

@@ -7,10 +7,11 @@ public class Main {
 //        easy.reverseStr("abcd", 4);
 //        easy.imageSmoother(new int[][]{{1, 1, 1}, {1, 0, 1}, {1, 1, 1}});
 //        easy.minCostClimbingStairs(new int[]{10, 15, 20});
-        TreeNode treeNode = TreeNode.createTree(new Integer[]{6, 2, 8, 0, 4, 7, 9, null, null, 3, 5});
-        easy.lowestCommonAncestor(
-                treeNode,
-                TreeNode.search(treeNode, 2),
-                TreeNode.search(treeNode, 8));
+        easy.numPrimeArrangements(5);
+//        TreeNode treeNode = TreeNode.createTree(new Integer[]{6, 2, 8, 0, 4, 7, 9, null, null, 3, 5});
+//        easy.lowestCommonAncestor(
+//                treeNode,
+//                TreeNode.search(treeNode, 2),
+//                TreeNode.search(treeNode, 8));
     }
 }
