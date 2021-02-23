@@ -12,6 +12,45 @@ import java.util.Map;
 import java.util.Set;
 
 public class Easy {
+    public int searchInsert(int[] nums, int target) {
+        int left = -1;
+        int right = nums.length;
+        while (right - left > 1) {
+            int mid = (right - left) / 2 + left;
+            if (nums.length <= mid || nums[mid] < target) {
+                left = mid;
+            } else {
+                right = mid;
+            }
+
+        }
+        return right;
+    }
+
+    int min = Integer.MAX_VALUE;
+
+    public int minDepth(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        recursiveTree(root, 1);
+        return min;
+    }
+
+    public void recursiveTree(TreeNode tree, int depth) {
+        if (tree.left == null && tree.right == null) {
+            min = Math.min(depth, min);
+            return;
+        }
+        if (tree.left != null) {
+            recursiveTree(tree.left, depth + 1);
+        }
+
+        if (tree.right != null) {
+            recursiveTree(tree.right, depth + 1);
+        }
+    }
+
     public void moveZeroes(int[] nums) {
 
         int pos = 0;
