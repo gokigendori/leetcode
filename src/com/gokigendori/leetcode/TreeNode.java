@@ -15,7 +15,7 @@ public class TreeNode {
         val = x;
     }
 
-    public static TreeNode createTree(Integer[] array) {
+    public static TreeNode createNoe(Integer[] array) {
         TreeNode p = new TreeNode(array[0]);
         recursive(p, array, 0);
         return p;

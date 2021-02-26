@@ -12,6 +12,72 @@ import java.util.Map;
 import java.util.Set;
 
 public class Easy {
+
+    public ListNode deleteDuplicates(ListNode head) {
+        ListNode current = head;
+        while (current != null && current.next != null) {
+            ListNode next = current.next;
+            while (next != null && current.val == next.val) {
+                next = next.next;
+            }
+            current.next = next;
+            current = next;
+        }
+        return head;
+    }
+
+
+    public boolean isValid(String s) {
+        char[] c = s.toCharArray();
+        Deque<Character> queue = new ArrayDeque<>();
+        for (int i = c.length - 1; 0 <= i; i--) {
+            if (c[i] == '(' && !queue.isEmpty()) {
+                char cc = queue.pop();
+                if (cc != ')') {
+                    queue.add(cc);
+                    queue.add(c[i]);
+                }
+            } else if (c[i] == '{' && !queue.isEmpty()) {
+                char cc = queue.pop();
+                if (cc != '}') {
+                    queue.add(cc);
+                    queue.add(c[i]);
+                }
+
+            } else if (c[i] == '[' && !queue.isEmpty()) {
+                char cc = queue.pop();
+                if (cc != ']') {
+                    queue.add(cc);
+                    queue.add(c[i]);
+                }
+
+            } else {
+                queue.push(c[i]);
+            }
+        }
+
+        if (queue.isEmpty()) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean hasCycle(ListNode head) {
+        if (head == null) {
+            return false;
+        }
+        Set<ListNode> set = new HashSet<>();
+        while (head.next != null) {
+            if (set.contains(head)) {
+                return true;
+            }
+            set.add(head);
+            head = head.next;
+        }
+
+        return false;
+    }
+
     public int searchInsert(int[] nums, int target) {
         int left = -1;
         int right = nums.length;
