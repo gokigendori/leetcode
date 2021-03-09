@@ -1480,8 +1480,8 @@ public class Easy {
     public String build(char[] s) {
 
         Deque<Character> q = new ArrayDeque<>();
-        for (int i = 0; i < s.length; i++) {
-            q.push(s[i]);
+        for (char value : s) {
+            q.push(value);
         }
 
         int delete = 0;
@@ -1510,8 +1510,8 @@ public class Easy {
         for (Integer key : map.keySet()) {
             List<Integer> layer = map.get(key);
             long sum = 0;
-            for (int i = 0; i < layer.size(); i++) {
-                sum += layer.get(i);
+            for (Integer integer : layer) {
+                sum += integer;
             }
             answer.add((double) sum / layer.size());
         }
