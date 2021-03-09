@@ -7,11 +7,155 @@ import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Easy {
+    public int numWaterBottles(int numBottles, int numExchange) {
+        int result = numBottles;
+        while (numExchange <= numBottles) {
+            int mod = numBottles % numExchange;
+            int div = numBottles / numExchange;
+            numBottles = mod + div;
+            result += div;
+        }
+        return result;
+    }
+
+    public String makeGood(String s) {
+        LinkedList<Character> chars = new LinkedList<>();
+        for (char c : s.toCharArray()) {
+            chars.add(c);
+        }
+        for (int i = 0; i < chars.size() - 1; i++) {
+            char c = chars.get(i);
+            char cc = chars.get(i + 1);
+            if ((c == cc + 32) || (c == cc - 32)) {
+                chars.remove(i + 1);
+                chars.remove(i);
+                i = -1;
+            }
+        }
+        return chars.stream().map(String::valueOf).collect(Collectors.joining());
+    }
+
+    public int maxProfit2(int[] prices) {
+        int pre = prices[0];
+        int base = pre;
+        int result = 0;
+        int i = 1;
+        while (i < prices.length) {
+            if (pre < prices[i]) {
+                while (i < prices.length && pre <= prices[i]) {
+                    // 上がった
+                    pre = prices[i];
+                    i++;
+                }
+                result += pre - base;
+            } else if (pre == prices[i]) {
+                i++;
+            } else if (prices[i] < pre) {
+                while (i < prices.length && prices[i] <= pre) {
+                    // 下がった
+                    pre = prices[i];
+                    base = pre;
+                    i++;
+                }
+            }
+        }
+        return result;
+    }
+
+    public int[] decrypt(int[] code, int k) {
+        int[] result = new int[code.length];
+        if (k == 0) {
+            return result;
+        } else if (k > 0) {
+            for (int i = 0; i < code.length; i++) {
+                int sum = 0;
+                for (int j = 1; j <= k; j++) {
+                    int pos = i + j;
+                    if (code.length <= pos) {
+                        pos -= code.length;
+                    }
+                    sum += code[pos];
+                }
+                result[i] = sum;
+            }
+        } else {
+            for (int i = 0; i < code.length; i++) {
+                int sum = 0;
+                for (int j = 1; j <= -k; j++) {
+                    int pos = i - j;
+                    if (pos < 0) {
+                        pos += code.length;
+                    }
+                    sum += code[pos];
+                }
+                result[i] = sum;
+            }
+
+        }
+        return result;
+    }
+
+    public int distributeCandies(int[] candyType) {
+        Set<Integer> set = new HashSet<>();
+        for (int i : candyType) {
+            set.add(i);
+        }
+        int limit = candyType.length / 2;
+        if (set.size() < limit) {
+            limit = set.size();
+        }
+        return limit;
+    }
+
+    boolean hasPath = false;
+
+    public boolean hasPathSum(TreeNode root, int targetSum) {
+
+        if (root == null) {
+            return false;
+        }
+        recursivePath(root, targetSum, 0);
+        return hasPath;
+    }
+
+    public void recursivePath(TreeNode node, int targetSum, int current) {
+        current += node.val;
+        if (node.left == null && node.right == null) {
+            if (!hasPath && current == targetSum) {
+                hasPath = true;
+            }
+            return;
+        }
+        if (node.right != null) {
+            recursivePath(node.right, targetSum, current);
+        }
+        if (node.left != null) {
+            recursivePath(node.left, targetSum, current);
+        }
+
+    }
+
+    public int busyStudent(int[] startTime, int[] endTime, int queryTime) {
+        int result = 0;
+        for (int i = 0; i < startTime.length; i++) {
+            if (startTime[i] <= queryTime && queryTime <= endTime[i]) {
+                result++;
+            }
+        }
+        return result;
+    }
+
+    public int maxProduct(int[] nums) {
+        Arrays.sort(nums);
+        return (nums[nums.length - 1] - 1) * (nums[nums.length - 2] - 1);
+    }
 
     public int numPrimeArrangements(int n) {
         int prime = 0;
