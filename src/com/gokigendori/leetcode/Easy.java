@@ -9,9 +9,170 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Set;
 
 public class Easy {
+    public int firstUniqChar(String s) {
+        char[] c = s.toCharArray();
+        Map<Character, Integer> map = new HashMap<>();
+        for (Character cc : c) {
+            map.put(cc, map.getOrDefault(cc, 0) + 1);
+        }
+
+        for (int i = 0; i < c.length; i++) {
+            if (map.get(c[i]) == 1) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public int numUniqueEmails(String[] emails) {
+
+        Set<String> set = new HashSet<>();
+        for (String email : emails) {
+            String name = email.split("@")[0];
+            String domain = email.split("@")[1];
+            name = name.replaceAll("\\.", "");
+            if (name.contains("+")) {
+                name = name.split("\\+")[0];
+            }
+            set.add(name + "@" + domain);
+        }
+        return set.size();
+    }
+
+    public int maxSubArray(int[] nums) {
+        int result = nums[0];
+        int currentMax = nums[0];
+        for (int i = 1; i < nums.length; i++) {
+            currentMax = Math.max(nums[i], nums[i] + currentMax);
+            result = Math.max(result, currentMax);
+        }
+        return result;
+    }
+
+    public TreeNode mergeTrees(TreeNode root1, TreeNode root2) {
+
+        if (root1 == null && root2 == null) {
+            return null;
+        }
+        TreeNode node = new TreeNode(0);
+        setNodeVal(node, root1, root2);
+        addTree(node, root1, root2);
+        return node;
+    }
+
+    public void setNodeVal(TreeNode node, TreeNode root1, TreeNode root2) {
+        int val;
+        if (root1 == null) {
+            val = root2.val;
+        } else if (root2 == null) {
+            val = root1.val;
+        } else {
+            val = root1.val + root2.val;
+        }
+        node.val = val;
+    }
+
+    public void addTree(TreeNode node, TreeNode root1, TreeNode root2) {
+        setNodeVal(node, root1, root2);
+
+        TreeNode right1 = null;
+        TreeNode right2 = null;
+        if (root1 != null && root1.right != null) {
+            right1 = root1.right;
+        }
+        if (root2 != null && root2.right != null) {
+            right2 = root2.right;
+        }
+        if (!(right1 == null && right2 == null)) {
+            node.right = new TreeNode(0);
+            addTree(node.right, right1, right2);
+        }
+
+        TreeNode left1 = null;
+        TreeNode left2 = null;
+        if (root1 != null && root1.left != null) {
+            left1 = root1.left;
+        }
+        if (root2 != null && root2.left != null) {
+            left2 = root2.left;
+        }
+        if (!(left1 == null && left2 == null)) {
+            node.left = new TreeNode(0);
+            addTree(node.left, left1, left2);
+        }
+
+    }
+
+
+    public int[] intersection(int[] nums1, int[] nums2) {
+        Set<Integer> set = new HashSet<>();
+        Set<Integer> result = new HashSet<>();
+        for (int j : nums1) {
+            set.add(j);
+        }
+        for (int j : nums2) {
+            if (set.contains(j)) {
+                result.add(j);
+            }
+        }
+        int[] nums = new int[result.size()];
+        int i = 0;
+        for (Integer v : result) {
+            nums[i] = v;
+            i++;
+        }
+        return nums;
+
+    }
+
+    static class KthLargest {
+        PriorityQueue<Integer> pq;
+        int kk;
+
+        public KthLargest(int k, int[] nums) {
+            pq = new PriorityQueue<>(k, Integer::compare);
+            kk = k;
+            for (int num : nums) {
+                add(num);
+            }
+        }
+
+        public int add(int val) {
+            if (pq.size() < kk) {
+                pq.add(val);
+            } else {
+                Integer min = pq.poll();
+                if (min < val) {
+                    min = val;
+                }
+                pq.add(min);
+            }
+            return pq.peek();
+        }
+    }
+
+    public ListNode reverseList(ListNode head) {
+        if (head == null) {
+            return null;
+        }
+        ArrayDeque<Integer> q = new ArrayDeque<>();
+        while (head != null) {
+            q.push(head.val);
+            head = head.next;
+        }
+        ListNode result = new ListNode(q.pop());
+        ListNode tmp = result;
+        while (!q.isEmpty()) {
+            tmp.next = new ListNode(q.pop());
+            tmp = tmp.next;
+        }
+        return result;
+    }
+
 
     public ListNode deleteDuplicates(ListNode head) {
         ListNode current = head;
@@ -94,6 +255,30 @@ public class Easy {
     }
 
     int min = Integer.MAX_VALUE;
+    int max = 0;
+
+    public int maxDepth(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        recursiveTreeMax(root, 1);
+        return max;
+
+    }
+
+    public void recursiveTreeMax(TreeNode tree, int depth) {
+        if (tree.left == null && tree.right == null) {
+            max = Math.max(depth, max);
+            return;
+        }
+        if (tree.left != null) {
+            recursiveTreeMax(tree.left, depth + 1);
+        }
+
+        if (tree.right != null) {
+            recursiveTreeMax(tree.right, depth + 1);
+        }
+    }
 
     public int minDepth(TreeNode root) {
         if (root == null) {
