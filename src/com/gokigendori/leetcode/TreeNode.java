@@ -5,11 +5,17 @@ public class TreeNode {
     public TreeNode left;
     public TreeNode right;
 
+    public TreeNode(int val, TreeNode left, TreeNode right) {
+        this.val = val;
+        this.left = left;
+        this.right = right;
+    }
+
     public TreeNode(int x) {
         val = x;
     }
 
-    public static TreeNode createTree(Integer[] array) {
+    public static TreeNode createNode(Integer[] array) {
         TreeNode p = new TreeNode(array[0]);
         recursive(p, array, 0);
         return p;
