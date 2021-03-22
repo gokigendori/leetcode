@@ -17,6 +17,80 @@ import java.util.stream.Collectors;
 
 public class Easy {
 
+    public int pivotIndex(int[] nums) {
+        int sum = 0;
+        for (int i = 1; i < nums.length; i++) {
+            sum += nums[i];
+        }
+        int left = 0;
+        if (left == sum) {
+            return 0;
+        }
+        for (int i = 1; i < nums.length; i++) {
+            left += nums[i - 1];
+            sum -= nums[i];
+            if (left == sum) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public String thousandSeparator(int n) {
+        String s = String.valueOf(n);
+        char[] c = s.toCharArray();
+
+        StringBuilder sb = new StringBuilder();
+        int pos = 0;
+        for (int i = c.length - 1; 0 <= i; i--) {
+            if (0 < pos && pos % 3 == 0) {
+                sb.append(".");
+            }
+            sb.append(c[i]);
+            pos++;
+        }
+        String result = sb.reverse().toString();
+        return result;
+    }
+
+    public String longestNiceSubstring(String s) {
+        char[] c = s.toCharArray();
+        String result = "";
+        for (int left = 0; left < c.length - 1; left++) {
+            Set<Integer> chars = new HashSet<>();
+            Set<Integer> uchars = new HashSet<>();
+            int cc = c[left];
+            if (Character.isUpperCase(cc)) {
+                uchars.add(cc);
+            } else {
+                chars.add(cc);
+            }
+            for (int right = left + 1; right < c.length; right++) {
+                int ccc = c[right];
+                if (Character.isUpperCase(ccc)) {
+                    uchars.add(ccc);
+                } else {
+                    chars.add(ccc);
+                }
+                if (uchars.size() == chars.size()) {
+                    boolean isCorrect = true;
+                    for (int a : uchars) {
+                        if (!chars.contains(a + 32)) {
+                            isCorrect = false;
+                            break;
+                        }
+                    }
+                    if (isCorrect) {
+                        if ((right + 1 - left > result.length())) {
+                            result = s.substring(left, right + 1);
+                        }
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
     public int numWaterBottles(int numBottles, int numExchange) {
         int result = numBottles;
         while (numExchange <= numBottles) {
@@ -212,6 +286,7 @@ public class Easy {
             }
             return pq.peek();
         }
+
     }
 
     public ListNode reverseList(ListNode head) {
