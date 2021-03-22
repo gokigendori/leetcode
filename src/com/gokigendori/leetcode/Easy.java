@@ -12,10 +12,40 @@ import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Set;
-
 import java.util.stream.Collectors;
 
 public class Easy {
+    public TreeNode sortedArrayToBST(int[] nums) {
+        if (nums.length == 0) {
+            return null;
+        }
+        int center = nums.length / 2;
+
+        TreeNode tree = new TreeNode(nums[center]);
+        if (nums.length == 1) {
+            return tree;
+        }
+        tree.left = recursiveTree(nums, 0, center - 1);
+        tree.right = recursiveTree(nums, center + 1, nums.length - 1);
+        return tree;
+    }
+
+    public TreeNode recursiveTree(int[] nums, int from, int to) {
+        if (to < from || nums.length <= to) {
+            return null;
+        }
+        if (to == from) {
+            return new TreeNode(nums[to]);
+        }
+        int center = from + (to - from) / 2;
+
+        TreeNode tree = new TreeNode(nums[center]);
+        tree.left = recursiveTree(nums, from, center - 1);
+        tree.right = recursiveTree(nums, center + 1, to);
+
+        return tree;
+    }
+
 
     public int numWaterBottles(int numBottles, int numExchange) {
         int result = numBottles;
