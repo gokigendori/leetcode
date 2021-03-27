@@ -2,8 +2,9 @@ package com.gokigendori.leetcode.medium;
 
 import com.gokigendori.leetcode.TreeNode;
 
-import java.util.AbstractMap;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,8 +14,115 @@ import java.util.PriorityQueue;
 import java.util.Set;
 
 public class Medium {
+
+    public int lengthOfLIS(int[] nums) {
+        int result = 1;
+        int[] dp = new int[nums.length + 1];
+        for (int i = 0; i < nums.length; i++) {
+            for (int j = i + 1; j < nums.length; j++) {
+                if (nums[i] < nums[j]) {
+                    dp[j] = Math.max(dp[j], dp[i] + 1);
+                    result = Math.max(dp[j] + 1, result);
+                }
+            }
+        }
+        return result;
+    }
+
+
+    int isLandSize = 0;
+
+    public int maxAreaOfIsland(int[][] grid) {
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[0].length; j++) {
+                if (grid[i][j] == 1) {
+                    grid[i][j] = 0;
+                    islandSizeRecursive(grid, i, j);
+                }
+            }
+        }
+        return isLandSize;
+    }
+
+    public void islandSizeRecursive(int[][] grid, int yy, int xx) {
+        int[] x = new int[]{0, 0, -1, 1};
+        int[] y = new int[]{1, -1, 0, 0};
+        ArrayDeque<Pair> q = new ArrayDeque<>();
+        int size = 1;
+        isLandSize = Math.max(isLandSize, size);
+        q.add(new Pair(yy, xx));
+        while (!q.isEmpty()) {
+            Pair p = q.poll();
+            for (int i = 0; i < 4; i++) {
+                if (p.key + y[i] < 0 || grid.length <= p.key + y[i]) {
+                    continue;
+                }
+                if (p.value + x[i] < 0 || grid[0].length <= p.value + x[i]) {
+                    continue;
+                }
+                if (grid[p.key + y[i]][p.value + x[i]] == 1) {
+                    grid[p.key + y[i]][p.value + x[i]] = 0;
+                    q.add(new Pair(p.key + y[i], p.value + x[i]));
+                    size++;
+                    isLandSize = Math.max(isLandSize, size);
+                }
+            }
+        }
+    }
+
+    public void nextPermutation(int[] nums) {
+        if (nums.length <= 1) {
+            return;
+        }
+        int pre = -1;
+        int pos = -1;
+        int min = 1000;
+        int minPos = -1;
+        for (int i = nums.length - 1; 0 <= i; i--) {
+            if (pre > nums[i]) {
+                pos = i;
+                break;
+            }
+            pre = nums[i];
+        }
+        if (pos == -1) {
+            reverse(nums);
+            return;
+        }
+        for (int i = pos; i < nums.length; i++) {
+            if (nums[pos] < nums[i] && nums[i] < min) {
+                min = nums[i];
+                minPos = i;
+            }
+        }
+        int tmp = nums[pos];
+        nums[pos] = min;
+        nums[minPos] = tmp;
+
+        List<Integer> list = new ArrayList<>();
+        for (int k = pos + 1; k < nums.length; k++) {
+            list.add(nums[k]);
+        }
+        Collections.sort(list);
+        for (int k = 0; k < list.size(); k++) {
+            nums[pos + k + 1] = list.get(k);
+        }
+    }
+
+    public static void reverse(int[] input) {
+        List<Integer> list = new ArrayList<>();
+        for (int j : input) {
+            list.add(j);
+        }
+        Collections.sort(list);
+        for (int i = 0; i < input.length; i++) {
+            input[i] = list.get(i);
+        }
+    }
+
+
     public int[] topKFrequent(int[] nums, int k) {
-        Map<Integer,Integer> map = new HashMap();
+        Map<Integer, Integer> map = new HashMap();
         for (int i = 0; i < nums.length; i++) {
             map.put(nums[i], map.getOrDefault(nums[i], 0) + 1);
         }
@@ -60,11 +168,86 @@ public class Medium {
         for (int i = 2; i < nums.length; i++) {
             if (i == 2) {
                 nums[i] += nums[i - 2];
-            }else {
+            } else {
                 nums[i] += Math.max(nums[i - 2], nums[i - 3]);
             }
         }
         return Math.max(nums[nums.length - 1], nums[nums.length - 2]);
+    }
+
+    public int numIslands(char[][] grid) {
+        int result = 0;
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[0].length; j++) {
+                if (grid[i][j] == '1') {
+                    result++;
+                    grid[i][j] = '0';
+                    islandRecursive(grid, i, j);
+                }
+            }
+        }
+        return result;
+    }
+
+    public void islandRecursive(char[][] grid, int yy, int xx) {
+        int[] x = new int[]{0, 0, -1, 1};
+        int[] y = new int[]{1, -1, 0, 0};
+        for (int i = 0; i < 4; i++) {
+            if (yy + y[i] < 0 || grid.length <= yy + y[i]) {
+                continue;
+            }
+            if (xx + x[i] < 0 || grid[0].length <= xx + x[i]) {
+                continue;
+            }
+            if (grid[yy + y[i]][xx + x[i]] == '1') {
+                grid[yy + y[i]][xx + x[i]] = '0';
+                islandRecursive(grid, yy + y[i], xx + x[i]);
+            }
+        }
+    }
+
+    List<List<Integer>> result;
+
+    public List<List<Integer>> permute(int[] nums) {
+        result = new ArrayList<>();
+        Set<Integer> set = new HashSet<>();
+        permuteRecursive(nums, set, new ArrayList<>());
+        return result;
+    }
+
+    public void permuteRecursive(int[] nums, Set<Integer> set, List<Integer> list) {
+        if (set.size() == nums.length) {
+            result.add(list);
+            return;
+        }
+        for (int i : nums) {
+            if (!set.contains(i)) {
+                List<Integer> next = new ArrayList<>(list);
+                next.add(i);
+                HashSet<Integer> clone = new HashSet<>(set);
+                clone.add(i);
+                permuteRecursive(nums, clone, next);
+            }
+        }
+    }
+
+    public double myPow(double x, int n) {
+        if (n == 0) {
+            return 1;
+        }
+        long abs = Math.abs((long) n);
+        double target = x;
+        if (n < 0) {
+            target = 1 / x;
+        }
+        double result;
+        if (n % 2 == 0) {
+            result = Math.pow(target * target, abs / 2);
+        } else {
+            result = Math.pow(target * target, (abs - 1) / 2);
+            result *= target;
+        }
+        return result;
     }
 
     /* Get the node with the smallest value greater than this one. */
@@ -116,7 +299,6 @@ public class Medium {
                 }
             }
         }
-
         return root;
     }
 
