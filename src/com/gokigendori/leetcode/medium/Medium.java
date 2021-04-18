@@ -14,6 +14,19 @@ import java.util.PriorityQueue;
 import java.util.Set;
 
 public class Medium {
+    public int findMin(int[] nums) {
+        int left = 0;
+        int right = nums.length - 1;
+        while (right - left > 1) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] > nums[right]) {
+                left = mid;
+            } else {
+                right = mid;
+            }
+        }
+        return Math.min(nums[left], nums[right]);
+    }
 
     public int lengthOfLIS(int[] nums) {
         int result = 1;

@@ -4,6 +4,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,6 +16,94 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class Easy {
+    public boolean isMonotonic(int[] A) {
+        Boolean isUpper = null;
+        if (A.length == 1) {
+            return true;
+        }
+
+        for (int i = 1; i < A.length; i++) {
+            if (isUpper == null) {
+                if (A[i - 1] < A[i]){
+                    isUpper = Boolean.TRUE;
+                }
+                if (A[i] < A[i -1 ]){
+                    isUpper = Boolean.FALSE;
+                }
+            }
+            if (isUpper == Boolean.TRUE) {
+                if (!(A[i - 1] <= A[i])) {
+                    return false;
+                }
+            } else if (isUpper == Boolean.FALSE) {
+                if (!(A[i] <= A[i - 1])) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public boolean hasAlternatingBits(int n) {
+        boolean check = (n & 1) == 1;
+        while (n > 0) {
+            boolean tmp = (n >> 1 & 1) == 1;
+            if (check == tmp) {
+                return false;
+            }
+            n = n >> 1;
+            check = tmp;
+        }
+        return true;
+    }
+
+    public int maxAscendingSum(int[] nums) {
+        int max = nums[0];
+        int pre = nums[0];
+        int tmp = nums[0];
+        for (int i = 1; i < nums.length; i++) {
+            if (nums[i] <= pre) {
+                tmp = nums[i];
+            }else{
+                tmp += nums[i];
+            }
+            max = Math.max(max, tmp);
+            pre = nums[i];
+        }
+        return max;
+    }
+    public int[] sortByBits(int[] arr) {
+        Arrays.sort(arr);
+        Map<Integer, List<Integer>> map = new HashMap<>();
+        for (int i : arr) {
+            int num = bitNum(i);
+            List<Integer> list = map.getOrDefault(num, new ArrayList<>());
+            list.add(i);
+            map.put(num, list);
+        }
+        List<Integer> keys = new ArrayList<>(map.keySet());
+        keys.sort(Comparator.naturalOrder());
+        List<Integer> result = new ArrayList<>();
+        for (Integer key : keys) {
+            result.addAll(map.get(key));
+        }
+        for (int i = 0; i < result.size(); i++) {
+            arr[i] = result.get(i);
+        }
+        return arr;
+    }
+
+    public int bitNum(int i) {
+        int num = 0;
+        while (0 < i) {
+            if ((i & 1) == 1) {
+                num++;
+            }
+            i = i >> 1;
+        }
+        return num;
+    }
+
     public int sumOfUnique(int[] nums) {
         Set<Integer> set = new HashSet<>();
         Set<Integer> deleted = new HashSet<>();
