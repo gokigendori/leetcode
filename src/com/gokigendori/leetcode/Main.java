@@ -8,7 +8,7 @@ public class Main {
         easy.sumOfUnique(new int[]{1, 1, 1, 1, 1});
         Medium medium = new Medium();
 
-        int j = medium.lengthOfLIS(new int[]{1,3,6,7,9,4,10,5,6});
+        medium.allPathsSourceTarget(new int[][]{{1, 2, 3}, {2}, {3}, {}});
 
         int i = 1;
 

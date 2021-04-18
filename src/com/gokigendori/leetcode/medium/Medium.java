@@ -1,5 +1,6 @@
 package com.gokigendori.leetcode.medium;
 
+import com.gokigendori.leetcode.ListNode;
 import com.gokigendori.leetcode.TreeNode;
 
 import java.util.ArrayDeque;
@@ -14,6 +15,102 @@ import java.util.PriorityQueue;
 import java.util.Set;
 
 public class Medium {
+    public List<List<Integer>> allPathsSourceTarget(int[][] graph) {
+        List<List<Integer>> result = new ArrayList<>();
+        List<Integer> route = new ArrayList<>();
+        route.add(0);
+        recursivePath(result, graph, 0, route);
+        return  result;
+    }
+
+    private void recursivePath(List<List<Integer>> result, int[][] graph, int i, List<Integer> route) {
+        if (i == graph.length - 1) {
+            result.add(new ArrayList<>(route));
+            return;
+        }
+        for (int next : graph[i]) {
+            List<Integer> r = new ArrayList<>(route);
+            r.add(next);
+            recursivePath(result, graph, next, r);
+        }
+    }
+
+    public int rob2(int[] nums) {
+
+        if (nums.length == 0) {
+            return 0;
+        }
+        if (nums.length == 1) {
+            return nums[0];
+        }
+        if (nums.length == 2) {
+            return Math.max(nums[0], nums[1]);
+        }
+        int[] nn = nums.clone();
+        nums[0] = 0;
+        for (int i = 2; i < nums.length; i++) {
+            if (i == 2) {
+                nums[i] += nums[i - 2];
+            } else {
+                nums[i] += Math.max(nums[i - 2], nums[i - 3]);
+            }
+        }
+        int result = Math.max(nums[nums.length - 1], nums[nums.length - 2]);
+        nums = nn;
+        nums[nums.length - 1] = 0;
+        for (int i = 2; i < nums.length; i++) {
+            if (i == 2) {
+                nums[i] += nums[i - 2];
+            } else {
+                nums[i] += Math.max(nums[i - 2], nums[i - 3]);
+            }
+        }
+        int result2 = Math.max(nums[nums.length - 1], nums[nums.length - 2]);
+        return Math.max(result, result2);
+    }
+
+    public int uniquePaths(int m, int n) {
+        int[][] dp = new int[m][n];
+        dp[0][0] = 1;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (j + 1 < n) {
+                    dp[i][j + 1] = dp[i][j + 1] + dp[i][j];
+                }
+                if (i + 1 < m) {
+                    dp[i + 1][j] = dp[i + 1][j] + dp[i][j];
+                }
+            }
+        }
+        return dp[m - 1][n - 1];
+    }
+
+
+    public List<List<String>> groupAnagrams(String[] strs) {
+        Map<String, List<String>> set = new HashMap<>();
+        for (String str : strs) {
+            char[] c = str.toCharArray();
+            Arrays.sort(c);
+            String cc = new String(c);
+            List<String> list = set.getOrDefault(cc, new ArrayList<>());
+            list.add(str);
+            set.put(cc, list);
+        }
+        return new ArrayList<>(set.values());
+    }
+
+
+    public ListNode detectCycle(ListNode head) {
+        Set<ListNode> used = new HashSet<>();
+        while (head != null) {
+            if (used.contains(head)) {
+                return head;
+            }
+            used.add(head);
+            head = head.next;
+        }
+        return null;
+    }
 
     public int lengthOfLIS(int[] nums) {
         int result = 1;
