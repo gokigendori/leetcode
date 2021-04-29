@@ -15,12 +15,227 @@ import java.util.PriorityQueue;
 import java.util.Set;
 
 public class Medium {
+    public ListNode deleteDuplicates(ListNode head) {
+        ListNode a = null;
+        ListNode target = null;
+
+        ListNode node = head;
+        while (node != null) {
+            if (isAdd(node)) {
+                if (a == null) {
+                    target = new ListNode(node.val);
+                    a = target;
+                } else {
+                    target.next = new ListNode(node.val);
+                    target = target.next;
+                }
+            }
+            node = proceed(node);
+        }
+        return a;
+    }
+
+    public ListNode proceed(ListNode node) {
+        if (node == null) {
+            return null;
+        }
+        ListNode tmp = node.next;
+        while (tmp != null && tmp.val == node.val) {
+            tmp = tmp.next;
+        }
+        return tmp;
+    }
+
+    public boolean isAdd(ListNode node) {
+        if (node.next != null && node.val != node.next.val) {
+            return true;
+        }
+        if (node != null && node.next == null) {
+            return true;
+        }
+        return false;
+    }
+
+    public List<Integer> pancakeSort(int[] arr) {
+        int[] tmp = arr.clone();
+        Arrays.sort(tmp);
+        List<Integer> result = new ArrayList<>();
+        for (int i = arr.length - 1; 1 <= i; i--) {
+            if (tmp[i] != arr[i]) {
+                int index = findK(arr, tmp[i]);
+                arr = pancake(arr, index);
+                if (0 < index) {
+                    result.add(index + 1);
+                }
+                arr = pancake(arr, i);
+                result.add(i + 1);
+            }
+        }
+        return result;
+    }
+
+    public int findK(int[] arr, int k) {
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i] == k) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
+    public int[] pancake(int[] arr, int k) {
+        int[] a = new int[arr.length];
+        for (int i = 0; i < a.length; i++) {
+            if (0 <= k) {
+                a[i] = arr[k];
+                k--;
+            } else {
+                a[i] = arr[i];
+            }
+        }
+        return a;
+    }
+
+    public int minPartitions(String n) {
+        int ans = 0;
+        char[] c = n.toCharArray();
+        for (int i = 0; i < c.length; i++) {
+            int cc = c[i] - '0';
+            ans = Math.max(ans, cc);
+        }
+        return ans;
+    }
+
+    public int minFlips(String target) {
+        int ans = 0;
+        char[] c = target.toCharArray();
+        char last = ' ';
+        Boolean ol = null;
+        for (int i = 0; i < c.length - 1; i++) {
+            char a = c[i];
+            char b = c[i + 1];
+            if (a == b || a == last) {
+                continue;
+            }
+            if (ol == null) {
+                ol = a == '0' && b == '1';
+                if (ol) {
+                    ans++;
+                } else {
+                    ans += 2;
+                }
+            } else {
+                ans += 2;
+            }
+            last = b;
+        }
+        if (ol == null) {
+            return c[c.length - 1] == '1' ? 1 : 0;
+        }
+        if (!ol && c[c.length - 1] == '1') {
+            ans++;
+        } else if (ol && c[c.length - 1] == '0') {
+            ans++;
+        }
+        return ans;
+    }
+
+    public int myAtoi(String s) {
+        Boolean isNegative = null;
+        boolean isStartNum = false;
+        boolean isZero = true;
+        char[] c = s.toCharArray();
+
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < c.length; i++) {
+            if (c[i] == ' ') {
+                if (isStartNum || isNegative != null) {
+                    break;
+                }
+                continue;
+            }
+
+            if (!(c[i] == '-' || c[i] == '+' || ((0 + '0' <= c[i] && c[i] <= 9 + '0')))) {
+                break;
+            }
+            if (c[i] == '-' || c[i] == '+') {
+                if (isNegative != null) {
+                    break;
+                }
+                if (isStartNum) {
+                    break;
+                }
+                isNegative = (c[i] == '-') ? true : false;
+            }
+            if (0 + '0' <= c[i] && c[i] <= 9 + '0') {
+                isStartNum = true;
+                if (0 + '0' != c[i]) {
+                    isZero = false;
+                }
+                if (!isZero) {
+                    sb.append(c[i]);
+                }
+            }
+        }
+
+        String str = sb.toString();
+        if (str.isBlank()) {
+            return 0;
+        }
+        if (isNegative == null) {
+            isNegative = false;
+        }
+        if (String.valueOf(Integer.MAX_VALUE).length() < str.length()) {
+            return isNegative ? Integer.MIN_VALUE : Integer.MAX_VALUE;
+        }
+        if (!isNegative) {
+            Long l = Long.parseLong(str);
+            Integer max = Integer.MAX_VALUE;
+            Long ml = new Long(max.longValue());
+            if (l <= ml) {
+                return Integer.parseInt(str);
+            }
+            return Integer.MAX_VALUE;
+
+        }
+        Long l = Long.parseLong("-" + str);
+        Integer min = Integer.MIN_VALUE;
+        Long ml = new Long(min.longValue());
+        if (l <= ml) {
+            return Integer.MIN_VALUE;
+        }
+        return Integer.parseInt("-" + str);
+    }
+
+
+    List<List<Integer>> subSets = new ArrayList<>();
+
+    public List<List<Integer>> subsets(int[] nums) {
+        for (int i = 0; i < Math.pow(2, nums.length); i++) {
+            setSubSets(i, nums);
+        }
+        return subSets;
+    }
+
+    public void setSubSets(int n, int[] nums) {
+        int pos = 0;
+        List<Integer> list = new ArrayList<>();
+        while (0 < n) {
+            if ((n & 1) == 1) {
+                list.add(nums[pos]);
+            }
+            n = n >> 1;
+            pos++;
+        }
+        subSets.add(list);
+    }
+
     public List<List<Integer>> allPathsSourceTarget(int[][] graph) {
         List<List<Integer>> result = new ArrayList<>();
         List<Integer> route = new ArrayList<>();
         route.add(0);
         recursivePath(result, graph, 0, route);
-        return  result;
+        return result;
     }
 
     private void recursivePath(List<List<Integer>> result, int[][] graph, int i, List<Integer> route) {
@@ -110,6 +325,20 @@ public class Medium {
             head = head.next;
         }
         return null;
+    }
+
+    public int findMin(int[] nums) {
+        int left = 0;
+        int right = nums.length - 1;
+        while (right - left > 1) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] > nums[right]) {
+                left = mid;
+            } else {
+                right = mid;
+            }
+        }
+        return Math.min(nums[left], nums[right]);
     }
 
     public int lengthOfLIS(int[] nums) {
