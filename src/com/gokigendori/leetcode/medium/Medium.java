@@ -15,6 +15,28 @@ import java.util.PriorityQueue;
 import java.util.Set;
 
 public class Medium {
+
+    public int uniquePathsWithObstacles(int[][] obstacleGrid) {
+        int[][] result = new int[obstacleGrid.length][obstacleGrid[0].length];
+        result[0][0] = obstacleGrid[0][0] == 1 ? 0 : 1;
+        for (int i = 0; i < obstacleGrid.length; i++) {
+            for (int j = 0; j < obstacleGrid[i].length; j++) {
+                if (obstacleGrid[i][j] == 1) {
+                    continue;
+                }
+                // left
+                if (j + 1 < obstacleGrid[i].length && obstacleGrid[i][j + 1] == 0) {
+                    result[i][j + 1] += result[i][j];
+                }
+                // bottom
+                if (i + 1 < obstacleGrid.length && obstacleGrid[i + 1][j] == 0) {
+                    result[i + 1][j] += result[i][j];
+                }
+            }
+        }
+        return result[obstacleGrid.length - 1][obstacleGrid[0].length - 1];
+    }
+
     public ListNode deleteDuplicates(ListNode head) {
         ListNode a = null;
         ListNode target = null;

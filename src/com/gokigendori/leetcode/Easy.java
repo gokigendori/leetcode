@@ -16,6 +16,81 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class Easy {
+
+    public int[][] matrixReshape(int[][] mat, int r, int c) {
+        int[][] result = new int[r][c];
+        if ((r * c) != (mat.length * mat[0].length)) {
+            return mat;
+        }
+
+        int rr = 0;
+        int cc = 0;
+        for (int i = 0; i < mat.length; i++) {
+            for (int j = 0; j < mat[i].length; j++) {
+                result[rr][cc] = mat[i][j];
+                cc++;
+                if (cc == c) {
+                    rr++;
+                    cc = 0;
+                }
+                if (rr == r) {
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
+
+    public int countCharacters(String[] words, String chars) {
+        Map<Character, Integer> map = new HashMap<>();
+        char[] c = chars.toCharArray();
+        for (char cc : c) {
+            map.put(cc, map.getOrDefault(cc, 0) + 1);
+        }
+        int result = 0;
+        for (String w : words) {
+            boolean tmp = true;
+            Map<Character, Integer> comp = new HashMap<>(map);
+            for (char cc : w.toCharArray()) {
+                if (!comp.containsKey(cc) || comp.get(cc) == 0) {
+                    tmp = false;
+                    break;
+                }
+                comp.put(cc, comp.get(cc) - 1);
+            }
+            if (tmp) {
+                result += w.length();
+            }
+        }
+        return result;
+    }
+
+    public int countBalls(int lowLimit, int highLimit) {
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int i = lowLimit; i <= highLimit; i++) {
+            int n = i;
+            int tmp = 0;
+            while (0 < n) {
+                tmp += n % 10;
+                n /= 10;
+            }
+            map.put(tmp, map.getOrDefault(tmp, 0) + 1);
+        }
+        List<Integer> list = map.values().stream().sorted(Comparator.reverseOrder()).collect(Collectors.toList());
+        return list.get(0);
+    }
+
+    public int largestAltitude(int[] gain) {
+        int max = 0;
+        int current = 0;
+        for (int i = 0; i < gain.length; i++) {
+            current += gain[i];
+            max = Math.max(current, max);
+        }
+        return max;
+    }
+
     public String truncateSentence(String s, int k) {
         char[] c = s.toCharArray();
         String result = s;
